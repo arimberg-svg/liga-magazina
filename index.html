@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Лига магазина: как читается премия</title>
+  <meta name="description" content="Как лига магазина увеличивает премию личных продаж, где её смотреть в 1С и как читать рейтинг.">
+  <meta name="published" content="2026-10-30">
+  <meta name="theme-color" content="#4208A8">
+  <style>
+    :root {
+      --um: #4208A8;
+      --gray: #CCCCCC;
+      --ink: #111111;
+      --paper: #ffffff;
+      --soft: #f6f4fa;
+      --line: rgba(66, 8, 168, 0.16);
+      --muted: #5c5278;
+      --font: "Code Next", "Code Next Trial", Arial, Helvetica, sans-serif;
+      --head: "Code Next", "Code Next Trial", "Arial Black", Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--soft);
+      font-family: var(--font);
+      font-size: 18px;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+    a { color: var(--um); }
+    img { max-width: 100%; height: auto; }
+    .top {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 18px 20px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: inherit;
+      text-decoration: none;
+    }
+    .brand img {
+      width: min(280px, 70vw);
+      min-width: 250px;
+      height: auto;
+      display: block;
+    }
+    .brand-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .header-end { display: flex; align-items: center; margin-left: auto; }
+    .to-home {
+      color: var(--um);
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .hero {
+      background: var(--um);
+      color: #fff;
+    }
+    .hero .wrap { padding: 28px 20px 32px; }
+    .kicker {
+      margin: 0 0 8px;
+      color: var(--gray);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .hero-line {
+      margin: 0 0 14px;
+      font-family: var(--head);
+      font-weight: 800;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+    }
+    .hero h1 {
+      margin: 0 0 12px;
+      font-family: var(--head);
+      font-weight: 800;
+      font-size: clamp(1.8rem, 4.4vw, 2.8rem);
+      letter-spacing: -0.03em;
+      line-height: 1.08;
+    }
+    header.top h1 {
+      margin: 0;
+      font-family: var(--head);
+      font-weight: 800;
+      font-size: 1.28rem;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      color: var(--um);
+    }
+    header.top .sub {
+      margin: 0;
+      color: var(--ink);
+      font-size: 0.98rem;
+      font-weight: 700;
+    }
+    .hero p.lead {
+      margin: 0;
+      max-width: 40em;
+      color: rgba(255, 255, 255, 0.92);
+    }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+    main { padding: 22px 0 56px; }
+    .jump {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 18px;
+    }
+    .jump a {
+      text-decoration: none;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .leagues {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 0 0 18px;
+    }
+    .league {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 18px 16px;
+      box-shadow: 0 12px 32px rgba(66, 8, 168, 0.08);
+    }
+    .league.heavy { background: var(--um); color: #fff; border-color: var(--um); }
+    .league.mid { background: #fff; }
+    .league.light { background: var(--gray); border-color: var(--gray); }
+    .league .name {
+      margin: 0;
+      font-family: var(--head);
+      font-weight: 800;
+      font-size: 1.35rem;
+      letter-spacing: -0.03em;
+    }
+    .league .coef {
+      margin: 6px 0 8px;
+      font-family: var(--head);
+      font-weight: 800;
+      font-size: clamp(2.4rem, 5vw, 3.4rem);
+      letter-spacing: -0.04em;
+      line-height: 0.95;
+    }
+    .league.heavy .coef,
+    .league.heavy .name { color: #fff; }
+    .league.mid .coef,
+    .league.mid .name,
+    .league.light .name { color: var(--um); }
+    .league.light .coef { color: var(--ink); }
+    .league p { margin: 0; }
+    .bar {
+      display: flex;
+      height: 52px;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 0 0 18px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .bar div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4px 8px;
+      line-height: 1.15;
+    }
+    .bar .b1 { flex: 15; background: var(--um); color: #fff; }
+    .bar .b2 { flex: 35; background: #111111; color: #fff; }
+    .bar .b3 { flex: 50; background: var(--gray); color: var(--ink); }
+    section {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 22px 22px 8px;
+      margin: 0 0 16px;
+      max-width: 100%;
+      overflow-x: auto;
+    }
+    h2 {
+      margin: 0 0 12px;
+      color: var(--um);
+      font-family: var(--head);
+      font-weight: 800;
+      font-size: 1.55rem;
+      letter-spacing: -0.03em;
+    }
+    h3 {
+      margin: 18px 0 8px;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+    p { margin: 0 0 12px; }
+    ol, ul { margin: 0 0 14px; padding-left: 1.25em; }
+    li { margin: 0 0 8px; }
+    .steps {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 0 0 16px;
+    }
+    .step {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px 6px;
+      background: var(--soft);
+    }
+    .step b {
+      display: block;
+      color: var(--um);
+      font-family: var(--head);
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+    }
+    .money {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 0 0 16px;
+    }
+    .money article {
+      border-radius: 14px;
+      padding: 14px 14px 10px;
+      background: var(--soft);
+      border: 1px solid var(--line);
+    }
+    .money strong {
+      display: block;
+      font-family: var(--head);
+      font-weight: 800;
+      font-size: 1.55rem;
+      letter-spacing: -0.03em;
+      color: var(--um);
+    }
+    .money span { color: var(--muted); font-size: 15px; }
+    .calc {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 16px;
+      align-items: end;
+      margin: 0 0 16px;
+    }
+    label { display: block; font-weight: 700; margin-bottom: 6px; }
+    input[type="number"] {
+      width: 100%;
+      font: inherit;
+      font-family: var(--head);
+      font-weight: 800;
+      font-size: 1.6rem;
+      color: var(--um);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: #fff;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0 0 16px;
+      font-size: 16px;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: var(--um);
+      color: #fff;
+      font-weight: 700;
+    }
+    td.num, th.num { text-align: right; }
+    td.num { white-space: nowrap; }
+    .mark { background: rgba(66, 8, 168, 0.1); font-weight: 700; }
+    .shot { margin: 0 0 16px; max-width: 100%; }
+    .shot .scroll {
+      overflow-x: auto;
+      max-width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+    .shot img { display: block; width: auto; max-width: none; }
+    .shot.fit .scroll img { width: 100%; max-width: 100%; }
+    figcaption {
+      margin: 8px 0 4px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .pair {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 8px;
+      align-items: stretch;
+      margin: 0 0 16px;
+    }
+    .pair .plus, .pair .eq {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--head);
+      font-weight: 800;
+      font-size: 1.8rem;
+      color: var(--um);
+    }
+    .score {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+    .score b {
+      display: block;
+      font-family: var(--head);
+      font-weight: 800;
+      font-size: 1.8rem;
+      color: var(--um);
+      letter-spacing: -0.03em;
+    }
+    .score.total {
+      background: var(--um);
+      color: #fff;
+      border-color: var(--um);
+    }
+    .score.total b,
+    .score.total span { color: #fff; }
+    .note {
+      border-left: 4px solid var(--um);
+      padding: 2px 0 2px 14px;
+      margin: 0 0 14px;
+    }
+    footer {
+      color: var(--muted);
+      font-size: 14px;
+      padding-bottom: 8px;
+    }
+    @media (max-width: 800px) {
+      .leagues, .money, .steps, .calc { grid-template-columns: 1fr; }
+      .pair { grid-template-columns: 1fr; }
+      .pair .plus, .pair .eq { padding: 0; }
+      .top { flex-wrap: wrap; align-items: center; }
+      header.top h1 { font-size: 1.05rem; }
+      .brand img { width: 250px; min-width: 250px; }
+      .bar { height: auto; flex-direction: column; }
+      .bar div { min-height: 44px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="https://akademia.um-ural.ru/">
+      <img class="logo" src="assets/logo.png" alt="У Михалыча" width="280" height="35">
+      <span class="brand-text">
+        <h1>Академия УМ</h1>
+        <p class="sub">Лига магазина</p>
+      </span>
+    </a>
+    <div class="header-end">
+      <a class="to-home" href="https://akademia.um-ural.ru/">к Академии</a>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="wrap">
+      <p class="kicker">Розница</p>
+      <p class="hero-line">Делаем мир крепче</p>
+      <h1>Лига магазина меняет премию личных продаж</h1>
+      <p class="lead">У каждого магазина есть лига. От неё зависит, вырастет ли премия личных продаж.</p>
+    </div>
+  </div>
+
+  <main>
+    <div class="wrap">
+      <nav class="jump" aria-label="Разделы">
+        <a href="#ligi">Три лиги</a>
+        <a href="#gde">Где смотреть</a>
+        <a href="#summa">Как получается сумма</a>
+        <a href="#kak">Как попадают в лигу</a>
+      </nav>
+
+      <section id="ligi">
+        <h2>Три лиги</h2>
+        <p>В магазине одна лига на всех. У всех, кто работает в этой точке, она одинаковая. Премия у каждого своя: сначала считаются его личные продажи, потом эта сумма умножается на коэффициент лиги.</p>
+        <div class="leagues">
+          <article class="league heavy">
+            <p class="name">Тяжеловесы</p>
+            <p class="coef">× 1,20</p>
+            <p>Верхние 15% магазинов. Премия личных продаж больше на 20%.</p>
+          </article>
+          <article class="league mid">
+            <p class="name">Средневесы</p>
+            <p class="coef">× 1,10</p>
+            <p>Магазины после тяжеловесов, до половины списка. Премия больше на 10%.</p>
+          </article>
+          <article class="league light">
+            <p class="name">Легковесы</p>
+            <p class="coef">× 1,00</p>
+            <p>Все остальные магазины. Премия личных продаж остаётся своей.</p>
+          </article>
+        </div>
+        <div class="bar" aria-hidden="true">
+          <div class="b1">Тяжеловесы<br>15%</div>
+          <div class="b2">Средневесы<br>до половины</div>
+          <div class="b3">Легковесы<br>остальные</div>
+        </div>
+      </section>
+
+      <section id="gde">
+        <h2>Где смотреть</h2>
+        <p>Откройте в 1С отчёт «Отчёт по мотивации». Это ваша строка на каждый день. Найдите свой магазин.</p>
+        <ul>
+          <li><b>Лига магазина.</b> Тяжеловесы, средневесы или легковесы.</li>
+          <li><b>Премия личные продажи.</b> Сумма уже с коэффициентом этой лиги.</li>
+        </ul>
+        <figure class="shot fit">
+          <div class="scroll">
+            <img src="img/otchet-premiya.png" alt="Отчёт по мотивации: магазин, премия личных продаж и лига магазина" width="1388" height="942">
+          </div>
+          <figcaption>Отчёт по мотивации. Слева магазин, справа столбцы «Премия личные продажи» и «Лига магазина».</figcaption>
+        </figure>
+      </section>
+
+      <section id="summa">
+        <h2>Как получается сумма</h2>
+        <p>В столбце «Премия личные продажи» уже стоит готовая сумма. Сначала 1С считает премию с ваших личных продаж. Потом умножает её на коэффициент лиги.</p>
+        <div class="calc">
+          <div>
+            <label for="base">Сумма с личных продаж, ₽</label>
+            <input id="base" type="number" min="0" step="100" value="10000" inputmode="decimal">
+          </div>
+          <p>Подставьте свою сумму. Карточки покажут, что встанет в столбец «Премия личные продажи».</p>
+        </div>
+        <div class="money" id="money">
+          <article>
+            <span>Тяжеловесы × 1,20</span>
+            <strong data-k="1.2">12 000 ₽</strong>
+          </article>
+          <article>
+            <span>Средневесы × 1,10</span>
+            <strong data-k="1.1">11 000 ₽</strong>
+          </article>
+          <article>
+            <span>Легковесы × 1,00</span>
+            <strong data-k="1">10 000 ₽</strong>
+          </article>
+        </div>
+        <p>Сумма с продаж у каждого своя, поэтому и премия разная. Лига только умножает уже посчитанное.</p>
+        <p class="note">В легковесах 15 000 ₽ так и останутся 15 000 ₽. В тяжеловесах 8 000 ₽ станут 9 600 ₽.</p>
+      </section>
+
+      <section id="kak">
+        <h2>Как магазин попадает в лигу</h2>
+        <p>1-го числа 1С сама ставит магазину лигу за прошлый месяц. В отчёте по мотивации она уже стоит в вашей строке.</p>
+        <p>В зачёт идут две цифры за месяц.</p>
+        <div class="steps">
+          <article class="step">
+            <b>Выручка магазина</b>
+            <p>Сколько точка продала всего.</p>
+          </article>
+          <article class="step">
+            <b>Выручка на человека</b>
+            <p>Выручка магазина, делённая на число людей в штате.</p>
+          </article>
+        </div>
+        <p>Крупный магазин силён общей выручкой. Магазин с меньшим штатом может быть силён второй цифрой: на каждого человека выручки больше. В зачёт идут обе.</p>
+        <h3>Как складываются баллы</h3>
+        <p>Первое место получает столько баллов, сколько магазинов в списке. За каждое следующее место балл меньше. Последнее место получает 1 балл.</p>
+        <p>Баллы ставят два раза: за выручку магазина и за выручку на человека. Эти баллы складывают. У кого сумма больше, тот выше в списке.</p>
+        <div class="pair">
+          <article class="score">
+            <span>1-е место по выручке магазина</span>
+            <b>21</b>
+            <span>балл, если в списке 21 магазин</span>
+          </article>
+          <div class="plus" aria-hidden="true">+</div>
+          <article class="score">
+            <span>2-е место по выручке на человека</span>
+            <b>20</b>
+            <span>баллов</span>
+          </article>
+          <div class="eq" aria-hidden="true">=</div>
+          <article class="score total">
+            <span>Итого баллов</span>
+            <b>41</b>
+            <span>такой магазин стоит вверху рейтинга</span>
+          </article>
+        </div>
+        <p>Дальше список делят по процентам.</p>
+        <ul>
+          <li><b>Тяжеловесы, 15%.</b> Первые 15% магазинов.</li>
+          <li><b>Средневесы, 50%.</b> Это граница половины списка: места после тяжеловесов и до этой границы. Если тяжеловесы забрали верхние 15%, средневесам остаётся следующий кусок, до 50%.</li>
+          <li><b>Легковесы, 100%.</b> Все, кто остался.</li>
+        </ul>
+      </section>
+
+      <section id="spravochnik">
+        <h2>Откуда берутся проценты и коэффициенты</h2>
+        <p>Их держат в справочнике «Виды лиг магазинов». Порядок показывает, какая лига сверху. Процент показывает, до какой доли списка лига доходит. Коэффициент премии показывает, на сколько умножается премия личных продаж.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Лига</th>
+              <th class="num">Порядок</th>
+              <th class="num">Процент</th>
+              <th class="num">Коэффициент</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Тяжеловесы</td>
+              <td class="num">1</td>
+              <td class="num">15</td>
+              <td class="num mark">1,20</td>
+            </tr>
+            <tr>
+              <td>Средневесы</td>
+              <td class="num">2</td>
+              <td class="num">50</td>
+              <td class="num mark">1,10</td>
+            </tr>
+            <tr>
+              <td>Легковесы</td>
+              <td class="num">3</td>
+              <td class="num">100</td>
+              <td class="num mark">1,00</td>
+            </tr>
+          </tbody>
+        </table>
+        <figure class="shot fit">
+          <div class="scroll">
+            <img src="img/vidy-lig.png" alt="Справочник «Виды лиг магазинов»: порядок, процент и коэффициент премии" width="798" height="291">
+          </div>
+          <figcaption>Справочник «Виды лиг магазинов». Отсюда отчёт берёт название лиги и коэффициент.</figcaption>
+        </figure>
+        <p>Если в отчёте лига пустая или сумма не сходится с коэффициентом, напишите Ивану Пяткову.</p>
+      </section>
+
+      <footer>
+        <p>Академия УМ. Лига магазина и премия личных продаж.</p>
+      </footer>
+    </div>
+  </main>
+  <script>
+    (function () {
+      var input = document.getElementById("base");
+      var out = document.querySelectorAll("#money strong");
+      var fmt = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 });
+      function paint() {
+        var raw = String(input.value).replace(",", ".").replace(/\s/g, "");
+        var n = Number(raw);
+        if (!isFinite(n) || n < 0) n = 0;
+        out.forEach(function (el) {
+          var k = Number(el.getAttribute("data-k"));
+          el.textContent = fmt.format(Math.round(n * k * 100) / 100) + " ₽";
+        });
+      }
+      input.addEventListener("input", paint);
+      paint();
+    })();
+  </script>
+  <script src="/js/akademia-shell.js?v=20261030" defer></script>
+</body>
+</html>
